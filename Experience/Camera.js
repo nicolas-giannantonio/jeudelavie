@@ -19,10 +19,10 @@ export default class Camera {
             75,
             this.sizes.width / this.sizes.height,
             0.1,
-            100
+            200
         );
 
-        this.instance.position.set(0, 0, 3);
+        this.instance.position.set(0, 0, 75);
     }
 
     setOrbitControls() {

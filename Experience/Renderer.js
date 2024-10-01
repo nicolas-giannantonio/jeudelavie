@@ -7,7 +7,7 @@ export default class Renderer {
         this.sizes = this.experience.sizes;
         this.scene = this.experience.scene;
         this.camera = this.experience.camera;
-        this.ray = new Ray;
+        // this.ray = new Ray;
 
         this.setInstance();
     }
@@ -28,7 +28,7 @@ export default class Renderer {
     }
 
     update() {
-        this.ray.render(this.instance, this.scene, this.camera.instance);
+        // this.ray.render(this.instance, this.scene, this.camera.instance);
         this.instance.render(this.scene, this.camera.instance);
     }
 

@@ -8,6 +8,8 @@ export default class Celulle {
     size;
     experience;
     id;
+    isAlive;
+    nextState;
 
     constructor() {
         Binder(this, ["update", "getNeighboursPositions"]);
@@ -16,6 +18,7 @@ export default class Celulle {
             width: 1,
         }
 
+        this.isAlive = Math.random() > 0.5;
     }
 
     init(position, experience) {
@@ -35,11 +38,8 @@ export default class Celulle {
 
 
         this.mesh = new THREE.Mesh(this.geometry, this.material);
-        this.mesh.name = "cellule";
         this.id = this.mesh.id;
         this.move(position);
-
-        this.experience.time.on("tick", this.update);
     }
 
 
@@ -50,12 +50,41 @@ export default class Celulle {
     }
 
     update() {
+        // console.log("cellule update")
+        this.material.color.set(this.isAlive ? "black" : "lightgray");
 
+        if (this.nextState !== undefined) {
+            this.isAlive = this.nextState;
+        }
     }
 
-    getNeighboursPositions() {
-        console.log(this.experience.world.grid)
+    getNeighboursPositions(gridSize, x, y) {
+        const neighbors = [];
+
+        const directions = [
+            { x: -1, y: -1 }, // Haut gauche
+            { x: 0,  y: -1 }, // Haut
+            { x: 1,  y: -1 }, // Haut droite
+            { x: -1, y: 0 },  // Gauche
+            { x: 1,  y: 0 },  // Droite
+            { x: -1, y: 1 },  // Bas gauche
+            { x: 0,  y: 1 },  // Bas
+            { x: 1,  y: 1 }   // Bas droite
+        ];
+
+        directions.forEach(direction => {
+            const newX = x + direction.x;
+            const newY = y + direction.y;
+
+            if (newX >= 0 && newX < gridSize.width && newY >= 0 && newY < gridSize.height) {
+                neighbors.push({ x: newX, y: newY });
+            }
+        });
+
+        return neighbors;
     }
+
+
 
     resize() {
         console.log("cellule resize")
