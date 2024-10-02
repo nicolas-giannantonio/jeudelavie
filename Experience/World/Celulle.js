@@ -80,9 +80,9 @@ export default class Celulle {
         }
 
         if (this.isAlive) {
-            this.timeIsAlive += 0.005;
+            this.timeIsAlive += 0.0015;
             this.mesh.scale.z += this.timeIsAlive;
-            this.mesh.position.z += this.timeIsAlive * 0.5;
+            this.mesh.position.z += (this.timeIsAlive * 0.5);
         }
 
     }
