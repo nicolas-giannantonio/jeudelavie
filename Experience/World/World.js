@@ -1,16 +1,18 @@
 import Celulle from "./Celulle.js";
-import {Binder} from "../Utils/Shorcuts.js";
 import * as THREE from "three";
 // import Ray from "../Utils/Ray.js";
+import * as dat from 'dat.gui';
 
 export default class World {
     grid = [];
     gridSize;
-    gap = 1.35;
+    gap = 1.25;
     lastUpdateTime = 0;
     speed = 100;
 
     constructor(experience) {
+        this.gui = new dat.GUI();
+
         this.experience = experience;
         this.scene = this.experience.scene;
 
@@ -19,20 +21,31 @@ export default class World {
             height: 30,
         }
 
-        // this.ray = new Ray(this.experience);
         this.init();
+        this.ev();
+    }
 
+    ev() {
         this.$aliveCounter = document.querySelector("#aliveCounter");
         this.$speed = document.querySelector("#speed");
-       this.$speed.addEventListener("input", (e) => {
-           this.speed = e.target.value;
-       })
+        this.$speed.addEventListener("input", (e) => {
+            this.speed = e.target.value;
+        })
 
         this.$btn_restart = document.querySelector("#btn_restart");
         this.$btn_restart.addEventListener("click", () => {
+
             this.actionAll((x, y) => {
+                const centerX = this.gridSize.width * 0.5;
+                const centerY = this.gridSize.height * 0.5;
+
+                const distance = Math.sqrt(Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2));
+
+                const scaleFactor = distance * 0.025;
+
                 this.grid[x][y].mesh.scale.set(0, 0, 0);
-                this.grid[x][y].celluleFx.zoom(x * 0.015 + y * 0.015);
+                this.grid[x][y].celluleFx.zoom(scaleFactor);
+                this.grid[x][y].celluleFx.gradient(scaleFactor);
             });
 
             this.actionAll((x, y) => {
@@ -40,7 +53,6 @@ export default class World {
             });
         });
     }
-
 
     actionAll(action) {
         for (let i = 0; i < this.gridSize.width; i++) {
@@ -68,9 +80,21 @@ export default class World {
 
         this.analyseGrid();
 
+
         this.scene.add(this.cellulesGroup);
+
+
         this.actionAll((x, y) => {
-            this.grid[x][y].celluleFx.zoom(x * 0.015 + y * 0.015);
+            const centerX = this.gridSize.width * 0.5;
+            const centerY = this.gridSize.height * 0.5;
+
+            const distance = Math.sqrt(Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2));
+
+            const scaleFactor = distance * 0.035;
+
+            this.grid[x][y].mesh.scale.set(0, 0, 0);
+            this.grid[x][y].celluleFx.zoom(scaleFactor);
+            this.grid[x][y].celluleFx.gradient(scaleFactor);
         });
     }
 
@@ -102,8 +126,6 @@ export default class World {
     }
 
     update() {
-        // this.ray.render(this.experience.renderer, this.scene, this.experience.camera.instance);
-
         if (!this.lastUpdateTime || Date.now() - this.lastUpdateTime > this.speed) {
             this.analyseGrid();
 

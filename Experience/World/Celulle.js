@@ -16,6 +16,7 @@ export default class Celulle {
 
     constructor() {
         Binder(this, ["update", "getNeighboursPositions"]);
+
         this.size = {
             height: 1,
             width: 1,
@@ -34,9 +35,15 @@ export default class Celulle {
             uniforms:
                 {
                     uTime: { value: 0 },
-                    uOpacity: { value: 0.75 },
+                    uColor: { value: new THREE.Color("white") },
+                    uOpacity: { value: 1.0 },
+                    uResolution: { value: [
+                            window.innerWidth / window.innerHeight,
+                        1,
+                        ]},
                 },
         })
+
 
         this.mesh = new THREE.Mesh(this.geometry, this.material);
         this.mesh.name = "cellule";
@@ -56,7 +63,8 @@ export default class Celulle {
     }
 
     update() {
-        if(!this.isAnimate) this.material.uniforms.uOpacity.value = this.isAlive ? .75 : 0.85;
+        if(!this.isAnimate) this.material.uniforms.uOpacity.value = this.isAlive ? 1.0 : 0.9;
+        if(!this.isAnimate) this.material.uniforms.uColor.value = this.isAlive ? new THREE.Color("#bbedbd") : new THREE.Color("white");
 
         if (this.nextState !== undefined) {
             this.isAlive = this.nextState;
@@ -91,14 +99,13 @@ export default class Celulle {
 }
 
 class CelluleFx {
-
     constructor(cellule) {
         this.cellule = cellule;
     }
 
     zoom(delay, zoom= {x: 1, y: 1, z: 1}) {
         gsap.to(this.cellule.mesh.scale, {
-            duration: 1.75,
+            duration: 2.25,
             x: zoom.x,
             y: zoom.y,
             z: zoom.z,
@@ -107,10 +114,19 @@ class CelluleFx {
         });
 
         gsap.to(this.cellule.mesh.material.uniforms.uOpacity, {
-            duration: 1.75,
-            value: .85,
+            duration: 2.75,
+            value: .75,
             delay: delay,
-            ease: "elastic.inOut(1.5, 0.45)",
+            ease: "expo.inOut",
+        });
+    }
+
+    gradient(delay) {
+        gsap.to(this.cellule.mesh.material.uniforms.uOpacity, {
+            duration: 1.25,
+            value: .9,
+            delay: delay + 1.5,
+            ease: "expo.inOut",
             onComplete: () => {
                 this.cellule.isAnimate = false;
             }
