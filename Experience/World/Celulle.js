@@ -1,7 +1,9 @@
 import * as THREE from "three";
-import VertexShader from "../shaders/vertex.glsl";
-import FragmentShader from "../shaders/fragment.glsl";
+// import VertexShader from "../shaders/vertex.glsl";
+// import FragmentShader from "../shaders/fragment.glsl";
 import {Binder} from "../Utils/Shorcuts.js";
+import gsap from "gsap";
+import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
 
 export default class Celulle {
     position; //x, y, z
@@ -18,12 +20,12 @@ export default class Celulle {
             width: 1,
         }
 
-        this.isAlive = Math.random() > 0.5;
+        this.isAlive = Math.random() > .5;
     }
 
     init(position, experience) {
         this.experience = experience;
-        this.geometry = new THREE.BoxGeometry(this.size.width, this.size.height, 1);
+        this.geometry = new RoundedBoxGeometry(this.size.width, this.size.height, 1, 3);
 
         // this.material = new THREE.ShaderMaterial({
         //     vertexShader: VertexShader,
@@ -35,9 +37,12 @@ export default class Celulle {
         // })
 
         this.material = new THREE.MeshBasicMaterial({ color: 0xcccccc });
-
-
         this.mesh = new THREE.Mesh(this.geometry, this.material);
+        this.mesh.name = "cellule";
+        this.mesh.scale.set(0, 0, 0);
+
+        this.celluleFx = new CelluleFx(this.mesh);
+
         this.id = this.mesh.id;
         this.move(position);
     }
@@ -50,8 +55,7 @@ export default class Celulle {
     }
 
     update() {
-        // console.log("cellule update")
-        this.material.color.set(this.isAlive ? "black" : "lightgray");
+        this.material.color.set(this.isAlive ? "#c2c2c2" : "#f1f1f1");
 
         if (this.nextState !== undefined) {
             this.isAlive = this.nextState;
@@ -84,11 +88,26 @@ export default class Celulle {
         return neighbors;
     }
 
-
-
     resize() {
-        console.log("cellule resize")
+        // console.log("cellule resize")
+    }
+}
 
+class CelluleFx {
+
+    constructor(mesh) {
+        this.mesh = mesh;
+    }
+
+    zoom(delay, zoom= {x: 1, y: 1, z: 1}) {
+        gsap.to(this.mesh.scale, {
+            duration: 1.75,
+            x: zoom.x,
+            y: zoom.y,
+            z: zoom.z,
+            delay: delay,
+            ease: "elastic.inOut(1.1, 0.35)",
+        });
     }
 
 }

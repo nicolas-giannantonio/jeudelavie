@@ -1,7 +1,5 @@
 import * as THREE from 'three';
-// CAMERA & ORBIT CONTROLS
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls.js";
-
 
 export default class Camera {
     constructor(experience) {
@@ -19,10 +17,10 @@ export default class Camera {
             75,
             this.sizes.width / this.sizes.height,
             0.1,
-            200
+            150
         );
 
-        this.instance.position.set(0, 0, 75);
+        this.instance.position.set(0, 0, 35);
     }
 
     setOrbitControls() {
@@ -32,7 +30,6 @@ export default class Camera {
         );
 
         this.controls.enableDamping = true;
-
     }
 
     resize() {
