@@ -15,8 +15,8 @@ export default class World {
         this.scene = this.experience.scene;
 
         this.gridSize = {
-            width: 30,
-            height: 30,
+            width: 40,
+            height: 40,
         }
 
         this.init();
@@ -181,7 +181,6 @@ export default class World {
             })
         });
     }
-
 
     analyseGrid() {
         let counter = 0;

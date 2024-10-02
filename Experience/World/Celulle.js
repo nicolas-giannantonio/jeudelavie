@@ -13,7 +13,7 @@ export default class Celulle {
     isAlive;
     nextState;
     isAnimate = true;
-    timeIsAlive = 0;
+    // timeIsAlive = 0;
 
     constructor() {
         Binder(this, ["update", "getNeighboursPositions"]);
@@ -30,11 +30,9 @@ export default class Celulle {
         this.experience = experience;
         this.geometry = new RoundedBoxGeometry(this.size.width, this.size.height, 1, 3);
 
-
         this.ambiantLight = new THREE.Color("#dddddd")
         this.diffuseLight = new THREE.Color("#e8e8e8")
         this.specularLight = new THREE.Color("white")
-
 
         this.material = new THREE.ShaderMaterial({
             vertexShader: VertexShader,
@@ -52,7 +50,6 @@ export default class Celulle {
                     uShininess: { value: 50. },
                 },
         })
-
 
         this.mesh = new THREE.Mesh(this.geometry, this.material);
         this.mesh.name = "cellule";
@@ -79,12 +76,11 @@ export default class Celulle {
             this.isAlive = this.nextState;
         }
 
-        if (this.isAlive) {
-            this.timeIsAlive += 0.0015;
-            this.mesh.scale.z += this.timeIsAlive;
-            this.mesh.position.z += (this.timeIsAlive * 0.5);
-        }
-
+        // if (this.isAlive) {
+        //     this.timeIsAlive += 0.0015;
+        //     this.mesh.scale.z += this.timeIsAlive;
+        //     this.mesh.position.z += (this.timeIsAlive * 0.5);
+        // }
     }
 
     getNeighboursPositions(gridSize, x, y) {

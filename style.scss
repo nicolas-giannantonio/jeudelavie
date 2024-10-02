@@ -38,6 +38,11 @@ html, body {
     }
   }
 
+  .pa__speed {
+    display: flex;
+    align-items: center;
+  }
+
   .pa__info__aliveCounter {
     display: inline-block;
     font-weight: bold;
