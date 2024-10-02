@@ -17,7 +17,7 @@ html, body {
   height: 100%;
 }
 
-.w__pa {
+.pa {
   position: fixed;
   top: 1rem;
   left: 1rem;
@@ -26,16 +26,19 @@ html, body {
   gap: 1rem;
   z-index: 1;
 
-  .w__info {
+  .pa__info {
     padding: 1.15rem 2rem;
     font-size: .85rem;
     border: 1px solid #d7d7d7;
-    //text-transform: uppercase;
     background: #f5f5f5;
     border-radius: .5rem;
+
+    .pa__info__speed {
+      padding-right: .5rem;
+    }
   }
 
-  #aliveCounter {
+  .pa__info__aliveCounter {
     display: inline-block;
     font-weight: bold;
     padding-left: .35rem;
@@ -43,16 +46,12 @@ html, body {
   }
 }
 
-.t_speed {
-  padding-right: .5rem;
-}
-
-.w__button {
+.button {
   position: fixed;
   top: 1rem;
   right: 1rem;
 
-  #btn_restart {
+  .button__restart {
     border: none;
     outline: none;
     font-weight: 600;

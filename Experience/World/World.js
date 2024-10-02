@@ -1,7 +1,6 @@
 import Celulle from "./Celulle.js";
 import * as THREE from "three";
-// import Ray from "../Utils/Ray.js";
-import * as dat from 'dat.gui';
+import {GUI} from "dat.gui";
 
 export default class World {
     grid = [];
@@ -11,8 +10,7 @@ export default class World {
     speed = 100;
 
     constructor(experience) {
-        this.gui = new dat.GUI();
-
+        this.gui = new GUI();
         this.experience = experience;
         this.scene = this.experience.scene;
 
@@ -36,6 +34,7 @@ export default class World {
         this.$btn_restart.addEventListener("click", () => {
 
             this.actionAll((x, y) => {
+                this.grid[x][y].isAnimate = true;
                 const centerX = this.gridSize.width * 0.5;
                 const centerY = this.gridSize.height * 0.5;
 
@@ -96,7 +95,93 @@ export default class World {
             this.grid[x][y].celluleFx.zoom(scaleFactor);
             this.grid[x][y].celluleFx.gradient(scaleFactor);
         });
+
+        this.GUIHELPER();
     }
+
+
+    GUIHELPER() {
+        // this.specularLight = new THREE.Color("white")
+        // FOR I
+        this.gui.addColor({ color: "#eaecea" }, "color").onChange((color) => {
+            this.actionAll((x, y) => {
+                this.grid[x][y].material.uniforms.uAmbientLightColor.value = new THREE.Color(color);
+            })
+        })
+
+        this.gui.addColor({ color: "#eaecea" }, "color").onChange((color) => {
+            this.actionAll((x, y) => {
+                this.grid[x][y].material.uniforms.uDiffuseLight.value = new THREE.Color(color);
+            })
+        })
+
+        this.gui.addColor({ color: "#eaecea" }, "color").onChange((color) => {
+            this.actionAll((x, y) => {
+                this.grid[x][y].material.uniforms.uSpecularLight.value = new THREE.Color(color);
+            })
+        })
+
+        this.gui.add({
+            x: 0,
+            y: 0,
+            z: 0
+        }, "x", -10, 100).onChange((value) => {
+            this.actionAll((x, y) => {
+                this.grid[x][y].material.uniforms.uCameraPosition.value.x = value;
+            })
+        })
+
+        this.gui.add({
+            x: 0,
+            y: 0,
+            z: 0
+        }, "y", -10, 100).onChange((value) => {
+            this.actionAll((x, y) => {
+                this.grid[x][y].material.uniforms.uCameraPosition.value.y = value;
+            })
+        })
+
+        this.gui.add({
+            x: 0,
+            y: 0,
+            z: 0
+        }, "z", -10, 100).onChange((value) => {
+            this.actionAll((x, y) => {
+                this.grid[x][y].material.uniforms.uCameraPosition.value.z = value;
+            })
+        });
+
+        this.gui.add({
+            x: 0,
+            y: 0,
+            z: 0
+        }, "x", -10, 100).onChange((value) => {
+            this.actionAll((x, y) => {
+                this.grid[x][y].material.uniforms.uLightPosition.value.x = value;
+            })
+        })
+
+        this.gui.add({
+            x: 0,
+            y: 0,
+            z: 0
+        }, "y", -10, 100).onChange((value) => {
+            this.actionAll((x, y) => {
+                this.grid[x][y].material.uniforms.uLightPosition.value.y = value;
+            })
+        })
+
+        this.gui.add({
+            x: 0,
+            y: 0,
+            z: 0
+        }, "z", -10, 10, .25).onChange((value) => {
+            this.actionAll((x, y) => {
+                this.grid[x][y].material.uniforms.uLightPosition.value.z = value;
+            })
+        });
+    }
+
 
     analyseGrid() {
         let counter = 0;

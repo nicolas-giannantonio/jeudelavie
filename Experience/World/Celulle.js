@@ -13,6 +13,7 @@ export default class Celulle {
     isAlive;
     nextState;
     isAnimate = true;
+    timeIsAlive = 0;
 
     constructor() {
         Binder(this, ["update", "getNeighboursPositions"]);
@@ -29,18 +30,26 @@ export default class Celulle {
         this.experience = experience;
         this.geometry = new RoundedBoxGeometry(this.size.width, this.size.height, 1, 3);
 
+
+        this.ambiantLight = new THREE.Color("#dddddd")
+        this.diffuseLight = new THREE.Color("#e8e8e8")
+        this.specularLight = new THREE.Color("white")
+
+
         this.material = new THREE.ShaderMaterial({
             vertexShader: VertexShader,
             fragmentShader: FragmentShader,
             uniforms:
                 {
                     uTime: { value: 0 },
-                    uColor: { value: new THREE.Color("white") },
+                    uColor: { value: new THREE.Color("white")},
                     uOpacity: { value: 1.0 },
-                    uResolution: { value: [
-                            window.innerWidth / window.innerHeight,
-                        1,
-                        ]},
+                    uLightPosition: { value: new THREE.Vector3(-4, -1, 2.5)},
+                    uCameraPosition: { value: new THREE.Vector3(0, 0, 35)},
+                    uAmbientLightColor: { value: this.ambiantLight},
+                    uDiffuseLight: { value: this.diffuseLight},
+                    uSpecularLight: { value: this.specularLight},
+                    uShininess: { value: 50. },
                 },
         })
 
@@ -64,11 +73,18 @@ export default class Celulle {
 
     update() {
         if(!this.isAnimate) this.material.uniforms.uOpacity.value = this.isAlive ? 1.0 : 0.9;
-        if(!this.isAnimate) this.material.uniforms.uColor.value = this.isAlive ? new THREE.Color("#bbedbd") : new THREE.Color("white");
+        if(!this.isAnimate) this.material.uniforms.uColor.value = this.isAlive ? new THREE.Color("#c3eac5") : new THREE.Color("white");
 
         if (this.nextState !== undefined) {
             this.isAlive = this.nextState;
         }
+
+        if (this.isAlive) {
+            this.timeIsAlive += 0.005;
+            this.mesh.scale.z += this.timeIsAlive;
+            this.mesh.position.z += this.timeIsAlive * 0.5;
+        }
+
     }
 
     getNeighboursPositions(gridSize, x, y) {
