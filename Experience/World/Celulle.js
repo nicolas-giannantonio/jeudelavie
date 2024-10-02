@@ -1,6 +1,6 @@
 import * as THREE from "three";
-// import VertexShader from "../shaders/vertex.glsl";
-// import FragmentShader from "../shaders/fragment.glsl";
+import VertexShader from "../shaders/vertex.glsl";
+import FragmentShader from "../shaders/fragment.glsl";
 import {Binder} from "../Utils/Shorcuts.js";
 import gsap from "gsap";
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
@@ -12,6 +12,7 @@ export default class Celulle {
     id;
     isAlive;
     nextState;
+    isAnimate = true;
 
     constructor() {
         Binder(this, ["update", "getNeighboursPositions"]);
@@ -27,21 +28,21 @@ export default class Celulle {
         this.experience = experience;
         this.geometry = new RoundedBoxGeometry(this.size.width, this.size.height, 1, 3);
 
-        // this.material = new THREE.ShaderMaterial({
-        //     vertexShader: VertexShader,
-        //     fragmentShader: FragmentShader,
-        //     uniforms:
-        //         {
-        //             uTime: { value: 0 }
-        //         },
-        // })
+        this.material = new THREE.ShaderMaterial({
+            vertexShader: VertexShader,
+            fragmentShader: FragmentShader,
+            uniforms:
+                {
+                    uTime: { value: 0 },
+                    uOpacity: { value: 0.75 },
+                },
+        })
 
-        this.material = new THREE.MeshBasicMaterial({ color: 0xcccccc });
         this.mesh = new THREE.Mesh(this.geometry, this.material);
         this.mesh.name = "cellule";
         this.mesh.scale.set(0, 0, 0);
 
-        this.celluleFx = new CelluleFx(this.mesh);
+        this.celluleFx = new CelluleFx(this);
 
         this.id = this.mesh.id;
         this.move(position);
@@ -55,7 +56,7 @@ export default class Celulle {
     }
 
     update() {
-        this.material.color.set(this.isAlive ? "#c2c2c2" : "#f1f1f1");
+        if(!this.isAnimate) this.material.uniforms.uOpacity.value = this.isAlive ? .75 : 0.85;
 
         if (this.nextState !== undefined) {
             this.isAlive = this.nextState;
@@ -87,26 +88,32 @@ export default class Celulle {
 
         return neighbors;
     }
-
-    resize() {
-        // console.log("cellule resize")
-    }
 }
 
 class CelluleFx {
 
-    constructor(mesh) {
-        this.mesh = mesh;
+    constructor(cellule) {
+        this.cellule = cellule;
     }
 
     zoom(delay, zoom= {x: 1, y: 1, z: 1}) {
-        gsap.to(this.mesh.scale, {
+        gsap.to(this.cellule.mesh.scale, {
             duration: 1.75,
             x: zoom.x,
             y: zoom.y,
             z: zoom.z,
             delay: delay,
-            ease: "elastic.inOut(1.1, 0.35)",
+            ease: "elastic.inOut(1.5, 0.45)",
+        });
+
+        gsap.to(this.cellule.mesh.material.uniforms.uOpacity, {
+            duration: 1.75,
+            value: .85,
+            delay: delay,
+            ease: "elastic.inOut(1.5, 0.45)",
+            onComplete: () => {
+                this.cellule.isAnimate = false;
+            }
         });
     }
 

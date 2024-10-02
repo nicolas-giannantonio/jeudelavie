@@ -8,11 +8,19 @@
     <link rel="stylesheet" href="style.scss">
   </head>
   <body>
-
-  <div class="w__aliveCounter">
-    <p>Cellules en vie <span id="aliveCounter">0</span></p>
-  </div>
   <canvas id="webgl"></canvas>
+  <div class="w__pa">
+    <div class="w__info">
+      <p>Cellules en vie <span id="aliveCounter">0</span></p>
+    </div>
+    <div class="w__info">
+      <label class="t_speed" for="speed">Vitesse</label><input min="50" max="1000" id="speed" type="range">
+    </div>
+  </div>
+
+  <div class="w__button">
+    <button id="btn_restart">Recommencer</button>
+  </div>
 
     <script type="module" src="/main.js"></script>
   </body>

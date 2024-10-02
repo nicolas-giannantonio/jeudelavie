@@ -6,11 +6,11 @@ import * as THREE from "three";
 export default class World {
     grid = [];
     gridSize;
-    gap = 1.5;
+    gap = 1.35;
     lastUpdateTime = 0;
+    speed = 100;
 
     constructor(experience) {
-        Binder(this, ["resize"]);
         this.experience = experience;
         this.scene = this.experience.scene;
 
@@ -23,6 +23,22 @@ export default class World {
         this.init();
 
         this.$aliveCounter = document.querySelector("#aliveCounter");
+        this.$speed = document.querySelector("#speed");
+       this.$speed.addEventListener("input", (e) => {
+           this.speed = e.target.value;
+       })
+
+        this.$btn_restart = document.querySelector("#btn_restart");
+        this.$btn_restart.addEventListener("click", () => {
+            this.actionAll((x, y) => {
+                this.grid[x][y].mesh.scale.set(0, 0, 0);
+                this.grid[x][y].celluleFx.zoom(x * 0.015 + y * 0.015);
+            });
+
+            this.actionAll((x, y) => {
+                this.grid[x][y].isAlive = Math.random() > .5;
+            });
+        });
     }
 
 
@@ -50,12 +66,11 @@ export default class World {
         this.cellulesGroup.position.x = this.gridSize.width * this.gap * -0.5;
         this.cellulesGroup.position.y = this.gridSize.height * this.gap * -0.5;
 
-        this.experience.sizes.on("resize", this.resize);
         this.analyseGrid();
 
         this.scene.add(this.cellulesGroup);
         this.actionAll((x, y) => {
-            this.grid[x][y].celluleFx.zoom(x * 0.015 + y * 0.02);
+            this.grid[x][y].celluleFx.zoom(x * 0.015 + y * 0.015);
         });
     }
 
@@ -89,7 +104,7 @@ export default class World {
     update() {
         // this.ray.render(this.experience.renderer, this.scene, this.experience.camera.instance);
 
-        if (!this.lastUpdateTime || Date.now() - this.lastUpdateTime > 500) {
+        if (!this.lastUpdateTime || Date.now() - this.lastUpdateTime > this.speed) {
             this.analyseGrid();
 
             this.actionAll((x, y) => {
@@ -97,12 +112,6 @@ export default class World {
             });
             this.lastUpdateTime = Date.now();
         }
-    }
-
-    resize () {
-        // this.actionAll((i, j) => {
-        //     this.grid[i][j].resize();
-        // })
     }
 }
 
